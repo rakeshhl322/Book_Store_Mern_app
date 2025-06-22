@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const user = require("./user");
 
-const order = new mongoose.Schema({
+const book = new mongoose.Schema({
 
     url:{
         type:String,
@@ -31,4 +31,5 @@ const order = new mongoose.Schema({
 {timestamps: true})
 
 
-module.exports = ("books",book)
+const Book = mongoose.model("books",book)
+module.exports = Book;
