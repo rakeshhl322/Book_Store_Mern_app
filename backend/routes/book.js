@@ -46,8 +46,8 @@ router.put("/update-book",authentacateToken, async (req,res)=> {
 })
 router.get("/get-all-books",authentacateToken,async (req,res) => {
     try {
-        const books = await Book.find.sort({createdAt:-1});
-        return res.send(200).json({data:books,status:'success'})
+        const books = await Book.find().sort({createdAt:-1});
+        return res.status(200).json({data:books,status:'success'})
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });   
 
@@ -55,8 +55,8 @@ router.get("/get-all-books",authentacateToken,async (req,res) => {
 })
 router.get("/get-recent-books",authentacateToken,async (req,res) => {
     try {
-        const books = await Book.find.sort({createdAt:-1}).limit(4);
-        return res.send(200).json({data:books,status:'success'})
+        const books = await Book.find().sort({createdAt:-1}).limit(4);
+        return res.status(200).json({data:books,status:'success'})
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });   
 
@@ -66,7 +66,7 @@ router.get("/get-book-by-id/:id",authentacateToken,async (req,res) => {
     try {
         const {bookid} = req.params
         const books = await Book.findById(bookid);
-        return res.send(200).json({data:books,status:'success'})
+        return res.status(200).json({data:books,status:'success'})
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });   
 

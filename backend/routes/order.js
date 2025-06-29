@@ -46,7 +46,7 @@ router.get("/get-order-history",authentacateToken, async(req,res)=>{
            res.status(500).json({ message: "Internal server error", error: error.message });
 
     }
-})
+}) 
 router.get("/get-all-orders",authentacateToken, async(req,res)=>{
     try {
         const userData = await Order.find.populate({
