@@ -2,18 +2,27 @@ import './App.css'
 import Navbar from './Components/Navbar/Navbar'
 import Home from './Components/Pages/Home'
 import Footer from './Components/Footer/Footer'
-import { BrowserRouter as Router,Routes,Route } from 'react-router-dom'
+import {Routes,Route } from 'react-router-dom'
 import AllBooks from './Components/Pages/AllBooks'
 import Login from './Components/Pages/Login'
 import Signup from './Components/Pages/Signup'
 import Cart from './Components/Pages/Cart'
 import Profile from './Components/Pages/Profile'
 import About from './Components/Pages/About'
+import ViewBookDetails from './Components/ViewBookDetails/ViewBookDetails'
+import { useDispatch } from 'react-redux'
+import { useEffect } from 'react'
+import { authActions } from './store/auth'
 function App() {
-
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if(localStorage.getItem("id") && localStorage.getItem("token") && localStorage.getItem("role")){
+      dispatch(authActions.login());
+      dispatch(authActions.changeRole(localStorage.getItem("role")));
+    }
+  },[])
   return (
     <>
-    <Router>
       <Navbar/>
       <Routes>
        <Route exact path="/" element={<Home/>}/>
@@ -23,9 +32,9 @@ function App() {
        <Route  path="/cart" element={<Cart/>}/>
        <Route  path="/profile" element={<Profile/>}/>
        <Route  path="/about-us" element={<About/>}/>
+       <Route  path="/view-book-details/:id" element={<ViewBookDetails/>}/>
       </Routes>
       <Footer/>
-    </Router>
      
       
     </>

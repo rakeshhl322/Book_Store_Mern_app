@@ -3,22 +3,21 @@ import   bookImg  from '../../assets/book-img.png'
 import { Link } from 'react-router-dom'
 import { FaGripLines } from "react-icons/fa";
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 const Navbar = () => {
     const [mobileNav,setMobileNav] = useState("hidden")
+  
     const links = [
         {
             title: "Home",
             link:"/",
         },
         {
-            title: "About Us",
-            link:"/about-us",
-        },
-        {
             title: "All Books",
             link:"/all-books",
         },
+      
         {
             title: "Cart",
             link:"/cart",
@@ -27,7 +26,16 @@ const Navbar = () => {
             title: "Profile",
             link:"/profile",
         },
+          {
+            title: "About Us",
+            link:"/about-us",
+        },
+      
     ]
+    const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
+    if(isLoggedIn === false){
+        links.splice(2,2)
+    }
   return (
     <>
     <nav className='z-50 relative bg-zinc-800 text-white px-8 py-4 flex justify-between items-center'>
@@ -45,10 +53,10 @@ const Navbar = () => {
             ))
             }
         </div>
-        <div className='hidden md:flex gap-4'>
-            <Link to="/login" className='px-4 py-1 border border-blue-500 rounded hover:bg-white hover:text-zinc-800 transition-all duration-300'>Login</Link>
-            <Link to="/signup" className='px-4 py-1 bg-blue-500 rounded hover:bg-white hover:text-zinc-800 transition-all duration-300'>SignUp</Link>
-        </div>
+            {isLoggedIn === false && <>
+            <Link to="/login" className={`{mobileNav}mb-8 px-8 text-2xl py-2 border border-blue-500 rounded hover:bg-white hover:text-zinc-800 transition-all duration-300`}>Login</Link>
+            <Link to="/signup" className={`{mobileNav}mb-8 px-8 text-2xl py-2 bg-blue-500 rounded hover:bg-white hover:text-zinc-800 transition-all duration-300`}>SignUp</Link>
+            </>}
         <button onClick={() => 
             mobileNav === "hidden"?
              setMobileNav("block"): 
@@ -66,8 +74,12 @@ const Navbar = () => {
                 {items.title}</Link> 
             ))
             }
+            {isLoggedIn === false && <>
             <Link to="/login" className={`{mobileNav}mb-8 px-8 text-2xl py-2 border border-blue-500 rounded hover:bg-white hover:text-zinc-800 transition-all duration-300`}>Login</Link>
             <Link to="/signup" className={`{mobileNav}mb-8 px-8 text-2xl py-2 bg-blue-500 rounded hover:bg-white hover:text-zinc-800 transition-all duration-300`}>SignUp</Link>
+            </>}
+
+            
     </div>
     </>
   )

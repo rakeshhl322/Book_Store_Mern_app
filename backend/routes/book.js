@@ -62,16 +62,25 @@ router.get("/get-recent-books",authentacateToken,async (req,res) => {
 
     }
 })
-router.get("/get-book-by-id/:id",authentacateToken,async (req,res) => {
+router.get("/get-book-by-id/:id", authentacateToken, async (req, res) => {
     try {
-        const {bookid} = req.params
-        const books = await Book.findById(bookid);
-        return res.status(200).json({data:books,status:'success'})
-    } catch (error) {
-        res.status(500).json({ message: "Internal server error", error: error.message });   
+        const { id } = req.params; // Extract the ID from the request parameters
+        console.log("Fetching book with ID:", id); // Debugging log
 
+        const book = await Book.findById(id);
+        console.log("Book found:", book); // Log the book result
+
+        if (!book) {
+            return res.status(404).json({ message: "Book not found", status: 'fail' });
+        }
+
+        return res.status(200).json({ data: book, status: 'success' });
+    } catch (error) {
+        console.error("Error fetching book by ID:", error); // Log any errors
+        return res.status(500).json({ message: "Internal server error", error: error.message });
     }
-})
+});
+
 
 
 router.delete("/delete-book",authentacateToken, async(req,res) => {
