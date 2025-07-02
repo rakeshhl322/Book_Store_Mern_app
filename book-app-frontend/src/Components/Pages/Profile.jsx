@@ -26,7 +26,7 @@ const Profile = () => {
         setUser(response.data)
     }
   return (
-    <div className='text-white bg-zinc-900 px-2 md:px-12 flex flex-col md:flex-row h-screen py-8'>
+    <div className='text-white bg-zinc-900 px-2 md:px-12 flex flex-col md:flex-row md-hscreen  lg:h-screen py-8'>
        {!user && <Loader/>}
        {user && 
        <>
