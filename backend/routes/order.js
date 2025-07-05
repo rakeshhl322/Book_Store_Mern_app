@@ -12,17 +12,18 @@ router.post("/place-order",authentacateToken,async (req,res) => {
             const newOrder = new Order({user:id,book:orderData._id});
             const orderDataFromDb = await newOrder.save();
 
-            await User.findByIdAndUpdate(id,{
-                $push: {orders:orderDataFromDb._id}
-            })
-            await User.findByIdAndUpdate(id,{
-                $pull: {cart:orderData._id}
-            })
-            return res.json({
-                status:"Success",
-                message:"Order placed successfully"
-            })
+            await User.findByIdAndUpdate(id, {
+                $push: { orders: orderDataFromDb._id }
+            }, { new: true });
+
+            await User.findByIdAndUpdate(id, {
+                $pull: { cart: orderData._id }
+            }, { new: true });
         }
+        return res.json({
+            status:"Success",
+            message:"Order(s) placed successfully"
+        })
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });
 
@@ -31,17 +32,33 @@ router.post("/place-order",authentacateToken,async (req,res) => {
 
 router.get("/get-order-history",authentacateToken, async(req,res)=>{
     try {
-        const {id} = req.headers;
-        const userData = await User.findById(id).populate({
-            path:"orders",
-            populate: {path: "book"}
-        })
+        const { id } = req.headers; // Add this line to retrieve the user's ID
+        // Ensure the field name matches your User schema (e.g., "orders")
+        const userData = await User.findById(id)
+           
+        if (!userData) {
+            return res.status(404).json({ status: "Error", message: "User not found" });
+        }
 
-        const orderData = userData.orders.reverse();
-        return res.json({
-            status:"Success",
-            data:orderData,
-        })
+
+        const orderData = userData.orders && userData.orders.length ? userData.orders.slice().reverse() : [];
+        // Populate the orders array with book details
+        const orders = await Order.find({ _id: { $in: orderData } });
+        // Manually fetch book details for each order
+        const ordersWithBookDetails = await Promise.all(
+            orders.map(async (order) => {
+                const book = await Book.findById(order.book);
+                return {
+                    ...order.toObject(),
+                    book: book ? book.toObject() : null
+                };
+            })
+        );
+
+        return res.status(200).json({
+            status: "Success",
+            data: ordersWithBookDetails,
+        });
     } catch (error) {
            res.status(500).json({ message: "Internal server error", error: error.message });
 
@@ -49,14 +66,20 @@ router.get("/get-order-history",authentacateToken, async(req,res)=>{
 }) 
 router.get("/get-all-orders",authentacateToken, async(req,res)=>{
     try {
-        const userData = await Order.find.populate({
-            populate: {path: "book"}
-        })
-        .populate({
-            path:"user",
-        }).sort({createdAt : -1})
-
-        return res.json({
+        const orders = await Order.find({}).sort({ createdAt: -1 });
+        // Manually fetch user and book details for each order
+        const userData = await Promise.all(
+            orders.map(async (order) => {
+            const user = await User.findById(order.user);
+            const book = await Book.findById(order.book);
+            return {
+                ...order.toObject(),
+                user: user ? user.toObject() : null,
+                book: book ? book.toObject() : null
+            };
+            })
+        );
+        return res.status(200).json({
             status:"Success",
             data:userData,
         })

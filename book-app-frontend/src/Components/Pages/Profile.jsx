@@ -22,11 +22,10 @@ const Profile = () => {
         };
 
         const response = await axios.get("/api/v1/get-user-information",config);
-        console.log(response.data)
         setUser(response.data)
     }
   return (
-    <div className='text-white bg-zinc-900 px-2 md:px-12 flex flex-col md:flex-row md-hscreen  lg:h-screen py-8'>
+    <div className='text-white bg-zinc-900 px-2 md:px-12 flex flex-col md:flex-row md:h-auto  lg:h-screen py-8'>
        {!user && <Loader/>}
        {user && 
        <>

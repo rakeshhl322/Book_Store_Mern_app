@@ -3,12 +3,12 @@ const user = require("./user");
 
 const order = new mongoose.Schema({
     user:{
-        type: mongoose.type.ObjectId,
-        ref:"user",
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
     },
     book: {
-        type: mongoose.type.ObjectId,
-        ref: "books",
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Book",
     },
     status: {
         type: String,

@@ -20,15 +20,16 @@ router.put("/add-to-cart", authentacateToken, async(req,res) => {
 
 router.put("/remove-book-from-cart/:bookid", authentacateToken, async (req,res) => {
     try {
-        const bookid =req.params;
+        const bookid =req.params.bookid;
         const {id} = req.headers;
-        await User.findByIdAndUpdate(id, {$pull: {orders:bookid}})
-        return res.status(200).json({message:"Book removed from favourites."})
-
+        const removebook = await User.findByIdAndUpdate(id, {$pull: {cart:bookid}})
+        if(removebook){
+        return res.status(200).json({message:"Book removed from cart."})
+        }
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });
 
-    }
+    } 
 })
 
 router.get("/get-user-cart",authentacateToken,async (req,res) => {

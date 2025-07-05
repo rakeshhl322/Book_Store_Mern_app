@@ -18,6 +18,24 @@ const Favourites = () => {
 
           setBooks(response.data.data)
       }
+      const handleRemoveFavourite = async (bookId) => {
+  const headers = {
+    id: localStorage.getItem('id'),
+    Authorization: `Bearer ${token}`,
+    bookid: bookId,
+  };
+  try {
+    const response = await axios.put('/api/v1/remove-book-from-favourites', {}, { headers });
+    alert(response.data.message);
+
+    // Update local state after successful removal
+    setBooks((prevBooks) => prevBooks.filter((book) => book._id !== bookId));
+  } catch (error) {
+    console.error('Error removing book from favourites:', error);
+  }
+};
+
+// Pass the callback to BookCard
   return (
     <div className='grid grid-cols-4 gap-2 m-2'>
       {books.length===0 && (
@@ -26,11 +44,9 @@ const Favourites = () => {
         </>
       )}
       {books && books.map((items,i) => 
-      <>
-      <div key={i}>
-        <BookCard key={i} data={items} />
-      </div>
-      </>
+        <div key={i}>
+        <BookCard data={items} favourites={true} onRemoveFavourite={handleRemoveFavourite} />
+        </div>
       )}
     </div>
   )

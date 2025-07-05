@@ -26,6 +26,10 @@ const Navbar = () => {
             title: "Profile",
             link:"/profile",
         },
+        {
+            title: "Admin-Profile",
+            link:"/profile",
+        },
           {
             title: "About Us",
             link:"/about-us",
@@ -35,6 +39,13 @@ const Navbar = () => {
     const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
     if(isLoggedIn === false){
         links.splice(2,2)
+    }
+    const role = useSelector((state) => state.auth.role)
+    if(isLoggedIn === true && role === 'admin'){
+        links.splice(3,1)
+    }
+    if(isLoggedIn === true && role === 'user'){
+        links.splice(4,1)
     }
   return (
     <>

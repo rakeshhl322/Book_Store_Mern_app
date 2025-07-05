@@ -10,14 +10,19 @@ import Cart from './Components/Pages/Cart'
 import Profile from './Components/Pages/Profile'
 import About from './Components/Pages/About'
 import ViewBookDetails from './Components/ViewBookDetails/ViewBookDetails'
-import { useDispatch } from 'react-redux'
+import Updatebook from './Components/ViewBookDetails/Updatebook'
+import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { authActions } from './store/auth'
 import Favourites from './Components/Profile/Favourites'
 import OrderHistory from './Components/Profile/OrderHistory'
 import Settings from './Components/Profile/Settings'
+import Allorders from './Components/Profile/Allorders'
+import Addbook from './Components/Profile/Addbook'
+
 function App() {
   const dispatch = useDispatch();
+        const role = useSelector((state) => state.auth.role)
   useEffect(() => {
     if(localStorage.getItem("id") && localStorage.getItem("token") && localStorage.getItem("role")){
       dispatch(authActions.login());
@@ -33,9 +38,11 @@ function App() {
        <Route  path="/login" element={<Login/>}/>
        <Route  path="/signup" element={<Signup/>}/>
        <Route  path="/cart" element={<Cart/>}/>
+       <Route  path="/updatebook/:id" element={<Updatebook/>}/>
        <Route  path="/profile" element={<Profile/>}>
-              <Route  path="/profile/favourites" element={<Favourites/>}/>
-              <Route  path="/profile/orderHistory" element={<OrderHistory/>}/>
+              {role === "user" ? <Route  path="/profile/favourites" element={<Favourites/>}/> : <Route  path="/profile/allorders" element={<Allorders/>}/>}
+              {role === "user" ?     <Route  path="/profile/orderHistory" element={<OrderHistory/>}/> : <Route  path="/profile/addbook" element={<Addbook/>}/>}
+          
               <Route  path="/profile/settings" element={<Settings/>}/>
 
        </Route>

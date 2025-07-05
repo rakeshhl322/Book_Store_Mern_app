@@ -20,9 +20,8 @@ const Signup = () => {
             if(values.userName === "" || values.email === "" || values.password === "" || values.address ===""){
                 alert("All fields are required")
             }else{
-         console.log(values)
         const response = await axios.post("/api/v1/sign-up",values);
-        console.log(response.data)   
+alert(response.data.message)   
         navigate("/")         
     }
         } catch (error) {

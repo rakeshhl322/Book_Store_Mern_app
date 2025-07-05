@@ -42,9 +42,7 @@ router.post("/sign-up", async (req, res) => {
 router.post("/sign-in", async (req,res) => {
     try {
         const {userName,password} = req.body;
-        console.log(req.body,'sanjay')
         const existingUser = await User.findOne({ userName: userName });
-         console.log(existingUser,'sanjay user')
         if(!existingUser){
             res.status(400).json({ message: "Invalid credentials", error: error.message });
         }
@@ -74,10 +72,8 @@ router.post("/sign-in", async (req,res) => {
 
 router.get("/get-user-information",authentacateToken, async (req,res) => {
     try {
-        console.log("inside",req.headers)
         const {id} = req.headers;
         const data = await User.findById(id).select('-password')
-        console.log(data)
         return res.status(200).json(data);
     } catch (error) {
         res.status(500).json({ message: "Internal server error", error: error.message });

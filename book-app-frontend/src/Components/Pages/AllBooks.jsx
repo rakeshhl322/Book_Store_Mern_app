@@ -20,7 +20,6 @@ const AllBooks = () => {
         };
 
         const response = await axios.get("/api/v1/get-all-books",config);
-        console.log(response)
         setAllBooks(response.data.data)
     }
   return (

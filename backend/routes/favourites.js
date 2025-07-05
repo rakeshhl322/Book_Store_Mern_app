@@ -26,7 +26,6 @@ router.put("/add-book-to-favourites", authentacateToken, async (req, res) => {
 router.put("/remove-book-from-favourites", authentacateToken, async (req,res) => {
     try {
         const {bookid, id} = req.headers;
-        console.log(bookid,id)
         const userData = await User.findById(id);
         const isBookFavourite = userData.favourites.includes(bookid);
         if(isBookFavourite){
@@ -42,9 +41,7 @@ router.put("/remove-book-from-favourites", authentacateToken, async (req,res) =>
 
 router.get("/get-favourite-books", authentacateToken, async (req, res) => {
   try {
-    console.log(req.headers,'inside')
     const { id } = req.headers;
-    console.log(id)
     const userData = await User.findById(id).populate("favourites");
 
     if (!userData) {
@@ -52,7 +49,6 @@ router.get("/get-favourite-books", authentacateToken, async (req, res) => {
       return res.status(404).json({ status: "Fail", message: "User not found" });
     }
 
-    console.log(userData);
     const favouriteBooks = userData.favourites;
 
     return res.status(200).json({

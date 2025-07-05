@@ -2,17 +2,18 @@ import axios from 'axios';
 import React from 'react'
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { useParams } from 'react-router-dom'
+import { useParams , useNavigate, Link} from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { GrLanguage } from "react-icons/gr";
 import Loader from '../Loader/Loader';
 import { FaCartPlus, FaEdit, FaHeart } from 'react-icons/fa';
 import { AiOutlineDelete } from "react-icons/ai";
-
+import Updatebook from './Updatebook'
 const ViewBookDetails = () => {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn)
   const role = useSelector((state) => state.auth.role)
   const {id} = useParams();
+  const history = useNavigate()
     const [book, setBook] = useState('');
           useEffect(() => {
               fetchData()
@@ -49,6 +50,16 @@ const ViewBookDetails = () => {
         const response = await axios.put('/api/v1/add-to-cart/', {},{headers});
         alert(response.data.message)
     }
+       const deleteBook = async () => {
+            const headers = {
+            id:localStorage.getItem('id'),
+            Authorization: `Bearer ${token}`,
+            bookid : id,
+        };
+        const response = await axios.delete('/api/v1/delete-book/', {headers});
+        alert(response.data.message)
+        history('/all-books')
+    }
 
     return (
         <>
@@ -72,10 +83,10 @@ const ViewBookDetails = () => {
       )}
       {isLoggedIn === true && role === 'admin' ? (
         <>
-          <button className='bg-white rounded-full text-2xl p-2 mt-4 text-red-500'>
+          <Link to={`/updatebook/${id}`} className='bg-white rounded-full text-2xl p-2 mt-4 text-red-500'>
             <FaEdit />
-          </button>
-          <button className='bg-white rounded-full text-2xl p-2 mt-4 text-blue-500'>
+          </Link>
+          <button onClick={deleteBook} className='bg-white rounded-full text-2xl p-2 mt-4 text-blue-500'>
             <AiOutlineDelete />
           </button>
         </>
